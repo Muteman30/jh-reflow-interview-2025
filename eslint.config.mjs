@@ -43,7 +43,7 @@ const eslintConfig = [
       'object-curly-spacing': ['error', 'always'], // Enforces spaces inside curly braces
       'key-spacing': ['error', {
         'beforeColon': false, 'afterColon': true 
-      }] // Aligns keys and values
+      }]
     }
   }
 ];
