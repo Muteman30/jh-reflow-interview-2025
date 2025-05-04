@@ -58,6 +58,10 @@ export default function Home() {
     setSelectedPage(pageNum);
   };
 
+  const handlePageLengthChange = (pageLength: number) => {
+    setPageLength(pageLength);
+  };
+
   //if(loading) return <p>Loading...</p>;
   if(errorMessage) return <p>Error: </p>;
 
@@ -66,6 +70,7 @@ export default function Home() {
 
   return (<main>
     <div className="flex justify-between">
+      <Table.PageLengthControl onPageLengthChange={handlePageLengthChange}/>
     </div>
     
     <Table.Root>
