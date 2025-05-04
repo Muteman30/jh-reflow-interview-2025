@@ -9,9 +9,6 @@ const fetchOpts = {
   } 
 };
 
-console.log('credentials', credentials);
-console.dir('fetchOpts', fetchOpts);
-
 export async function getData(url:string){
   return fetch(`${baseUrl}${url}`, fetchOpts)
     .then(response => {

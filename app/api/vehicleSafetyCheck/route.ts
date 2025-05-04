@@ -5,5 +5,5 @@ import { getData } from '@/utils/api';
 
 export async function GET(){
   const vehicles:ReflowServerResponse<VehicleSafetyCheck> = await getData('/VehicleSafetyCheck');
-  return NextResponse.json(vehicles.data.items);
+  return NextResponse.json(vehicles.data);
 }
