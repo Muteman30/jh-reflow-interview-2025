@@ -1,0 +1,12 @@
+table {
+  width: 100%
+}
+
+table thead tr{
+  background-color: rgb(228, 0, 58);
+  color: white;
+}
+
+table tr:nth-child(2n){
+  background-color:rgb(235, 249, 255);
+}

@@ -1,3 +1,4 @@
+import { Vehicle } from './Vehicle.type';
 import {
   ISO8601DateTimeString, YesNo, UrlString, HexColor
 } from './utilTypes.type';
