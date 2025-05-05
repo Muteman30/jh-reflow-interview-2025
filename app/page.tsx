@@ -6,6 +6,9 @@ import { Vehicle } from '@/models/Vehicle.type';
 import Table from '@/components/Table/Table';
 
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+import {
+  ChevronDownIcon, ChevronUpIcon, CaretSortIcon 
+} from '@radix-ui/react-icons';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -16,6 +19,8 @@ export default function Home() {
   const [pageLength, setPageLength] = useState<number>(10);
   const [selectedPage, setSelectedPage] = useState<number>(1);
   const [totalRows, setTotalRows] = useState<number>(0);
+  const [orderBy, setOrderBy] = useState<string>('');
+  const [asc, setAsc] = useState<boolean>(true);
 
   const [columns, setColumns] = useState<Record<string, boolean>>({});
   
@@ -26,16 +31,19 @@ export default function Home() {
       try{
         const vehicleResponse = await fetch(`/api/vehicle?limit=${pageLength}&page=${selectedPage}`);
         const vehicles = await vehicleResponse.json();
+        const cols = Object.keys(vehicles.items[0]).reduce((obj, key, index) => {
+          obj[key] = index < 5; 
+          return obj;
+        }, {} as Record<string, boolean>);
+
+        if (Object.keys(columns).length < 1) {
+          setColumns(cols);
+          setOrderBy(Object.keys(cols)[0]);
+        }
 
         setTotalRows(vehicles.total);
         setVehicles(vehicles.items);
-        if (Object.keys(columns).length < 1) {
-          const columns = Object.keys(vehicles.items[0]).reduce((obj, key, index) => {
-            obj[key] = index < 5; 
-            return obj;
-          }, {} as Record<string, boolean>);
-          setColumns(columns);
-        }
+
       } catch(error){
         setErrorMessage('There has been an error getting data');
         console.error(`error getting data: ${error}`);
@@ -46,6 +54,33 @@ export default function Home() {
     };
     getData();
   }, [selectedPage, pageLength]);
+
+  useEffect(()=>{
+    const orderedVehicles = vehicles.sort((a:Vehicle,b:Vehicle)=>{
+      let first = a, second = b;
+      if(asc){
+        first = b;
+        second = a;
+      }
+
+      if(first[orderBy] < second[orderBy]){
+        return -1;
+      } else if(first[orderBy] > second[orderBy]){
+        return 1;
+      }
+      return 0;
+    });
+    setVehicles(orderedVehicles);
+  }, [orderBy, asc, vehicles]);
+
+  const handleOrderBy = (col:string)=>{
+    if(col === orderBy){
+      setAsc(!asc);
+    } else {
+      setOrderBy(col);
+      setAsc(true);
+    }
+  };
 
   const handleColumnChange = function (name:string){
     setColumns(prevState => ({
@@ -78,7 +113,14 @@ export default function Home() {
       <Table.Head>
         <Table.Row>
           {
-            filteredCols.map(header => <Table.HeadCell key={header}>{header}</Table.HeadCell>)
+            filteredCols.map(header => (
+              <Table.HeadCell key={header}>
+                <button className="w-full cursor-pointer flex justify-center items-center" type="button" onClick={()=>handleOrderBy(header)}>
+                  <span>{header}</span>
+                  {orderBy === header ? (asc ? <ChevronDownIcon/> : <ChevronUpIcon/>) : <CaretSortIcon/>}
+                </button>
+              </Table.HeadCell>)
+            )
           }
         </Table.Row>
       </Table.Head>
