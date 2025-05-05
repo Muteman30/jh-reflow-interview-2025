@@ -1,5 +1,4 @@
 import React from 'react';
-import './TablePageControl.style.css';
 
 type TablePageControlProps = {
   onChange: (pageNum:number) => void,
