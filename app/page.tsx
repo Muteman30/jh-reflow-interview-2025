@@ -29,13 +29,13 @@ export default function Home() {
 
         setTotalRows(vehicles.total);
         setVehicles(vehicles.items);
-        
-        const columns = Object.keys(vehicles.items[0]).reduce((obj, key, index) => {
-          obj[key] = index < 5; 
-          return obj;
-        }, {} as Record<string, boolean>);
-        setColumns(columns);
-
+        if (Object.keys(columns).length < 1) {
+          const columns = Object.keys(vehicles.items[0]).reduce((obj, key, index) => {
+            obj[key] = index < 5; 
+            return obj;
+          }, {} as Record<string, boolean>);
+          setColumns(columns);
+        }
       } catch(error){
         setErrorMessage('There has been an error getting data');
         console.error(`error getting data: ${error}`);
@@ -50,7 +50,7 @@ export default function Home() {
   const handleColumnChange = function (name:string){
     setColumns(prevState => ({
       ...prevState,
-      name: !prevState[name]
+      [name]: !prevState[name]
     }));
   };
 
@@ -71,6 +71,7 @@ export default function Home() {
   return (<main>
     <div className="flex justify-between">
       <Table.PageLengthControl onPageLengthChange={handlePageLengthChange}/>
+      <Table.ColumnControl columns={columns} onChange={handleColumnChange}/>
     </div>
     
     <Table.Root>

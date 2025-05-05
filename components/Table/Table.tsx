@@ -62,7 +62,7 @@ const TableRow = ({
 const TableCell = ({
   children
 }: {children:ReactNode}) => {
-  return <td className=" p-2">{children}</td>;
+  return <td className="break-all p-2">{children}</td>;
 };
 
 const Table = {
